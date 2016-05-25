@@ -1,0 +1,63 @@
+import requests
+import json
+from bs4 import BeautifulSoup
+import random
+import time
+
+class PlayReviews():
+	
+	# def __init__(self):
+		# super(PlayReviews, self).__init__()
+		# print("Hello")
+
+
+	def get_reviews(self, app_id):
+		sort_by_time = '0'
+		sort_by_helpfulness = '2'
+		sort_by_time = '1'
+		# app_id = "com.buyhatke.assistant"
+		reviews = []
+		page_num = 0;
+		while True:
+			(reviews_html_string, is_last_page) = self.__fetch_reviews(app_id, page_num, sort_by_helpfulness)
+			# print(len(reviews))
+			reviews.extend(self.__parse_reviews(reviews_html_string))
+			page_num = page_num + 1
+			if is_last_page:
+				# print(reviews_html_string)
+				break
+		# time.sleep(random.randrange(1,5))
+		# print(len(reviews))
+		return reviews
+
+	def __fetch_reviews(self, app_id, page_num, sort_by):
+		url = "https://play.google.com/store/getreviews"
+		querystring = {"authuser":"0"}
+		payload = {'reviewType':'0', 'pageNum':page_num, 'id':app_id, 'xhr':'1', 'reviewSortOrder':sort_by}
+		response = requests.request("POST", url, data=payload, params=querystring)
+		response = response.content[4:]
+		# print(response)
+		response = json.loads(response)
+		reviews_html = response[0][2]
+		if response[0][1] == 1:
+			is_last_page = False
+		else:
+			is_last_page = True
+
+		return (reviews_html, is_last_page)
+
+
+	def __parse_reviews(self, reviews_html_string):
+		soup = BeautifulSoup(reviews_html_string, 'html.parser')
+		reviews = []
+		review_body_list = soup.findAll("div",{"class":"review-body"})
+		review_author_list = soup.findAll("span",{"class":"author-name"})
+		review_date_list = soup.findAll("span",{"class":"review-date"})
+		review_title_list = soup.findAll("span",{"class":"review-title"})
+		review_rating_list = soup.findAll("div",{"class":"tiny-star"})
+		
+		for i in range(len(review_body_list)):
+			review = {"title":review_title_list[i].text, "body":review_body_list[i].text, 
+			"date":review_date_list[i].text, "author":review_author_list[i].text, "rating":review_rating_list[i]['aria-label']}
+			reviews.append(review)
+		return reviews
