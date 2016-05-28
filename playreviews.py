@@ -35,12 +35,20 @@ class PlayReviews():
             # print(response)
             try:
                 response = json.loads(response)
-                reviews_html = response[0][2]
-                if response[0][1] == 1:
-                    is_last_page = False
+                if len(response)>0:
+                    if len(response[0]) == 4:
+                        reviews_html = response[0][2]
+                        if response[0][1] == 1:
+                            is_last_page = False
+                        else:
+                            is_last_page = True
+                            return (reviews_html, is_last_page)
+                    else:
+                        return('',True)
                 else:
-                    is_last_page = True
-                return (reviews_html, is_last_page)
+                    return('', True)
+
+                
             
             except ValueError as e:
                 traceback.print_exc()
