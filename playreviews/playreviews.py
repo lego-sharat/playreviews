@@ -2,7 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import random
-import timessh
+import time
 import traceback
 
 class PlayReviews():
@@ -77,6 +77,3 @@ class PlayReviews():
             "date":review_date_list[i].text, "author":review_author_list[i].text, "rating":review_rating_list[i]['aria-label']}
             reviews.append(review)
         return reviews
-
-x = PlayReviews()
-y = x.get_reviews("com.daamitt.walnut.app")
