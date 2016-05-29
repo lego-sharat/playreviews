@@ -2,7 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import random
-import time
+import timessh
 import traceback
 
 class PlayReviews():
@@ -19,7 +19,7 @@ class PlayReviews():
         while is_last_page is False:
             if page_num % 3 == 0:
                 time.sleep(random.random()+1)
-                
+
             (reviews_html_string, is_last_page) = self.__fetch_reviews(app_id, page_num, sort_by_helpfulness)
             # print(reviews_html_string)
             # print(is_last_page)
