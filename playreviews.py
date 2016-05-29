@@ -13,15 +13,20 @@ class PlayReviews():
         sort_by_time = '1'
         # app_id = "com.buyhatke.assistant"
         reviews = []
-        page_num = 0;
+        page_num = 0
         is_last_page = False
 
         while is_last_page is False:
+            if page_num % 3 == 0:
+                time.sleep(random.random()+1)
+                
             (reviews_html_string, is_last_page) = self.__fetch_reviews(app_id, page_num, sort_by_helpfulness)
+            # print(reviews_html_string)
+            # print(is_last_page)
             if len(reviews_html_string) > 0:
                 reviews.extend(self.__parse_reviews(reviews_html_string))
             page_num = page_num + 1
-
+        print(page_num)
         return reviews
 
     def __fetch_reviews(self, app_id, page_num, sort_by):
@@ -42,7 +47,7 @@ class PlayReviews():
                             is_last_page = False
                         else:
                             is_last_page = True
-                            return (reviews_html, is_last_page)
+                        return (reviews_html, is_last_page)
                     else:
                         return('',True)
                 else:
@@ -72,3 +77,6 @@ class PlayReviews():
             "date":review_date_list[i].text, "author":review_author_list[i].text, "rating":review_rating_list[i]['aria-label']}
             reviews.append(review)
         return reviews
+
+x = PlayReviews()
+y = x.get_reviews("com.daamitt.walnut.app")
