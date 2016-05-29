@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import random
 import time
 import traceback
+import os
 
 class PlayReviews():
     
@@ -77,3 +78,13 @@ class PlayReviews():
             "date":review_date_list[i].text, "author":review_author_list[i].text, "rating":review_rating_list[i]['aria-label']}
             reviews.append(review)
         return reviews
+
+    def fetch_and_write_reviews(self, app_id, data_path = 'data/'):
+
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
+        reviews_list = self.get_reviews(app_id)
+        fname = data_path+app_id + '.json'
+        with open(fname, 'w') as outfile:
+            json.dump(reviews_list, outfile, indent=2)
+        return
