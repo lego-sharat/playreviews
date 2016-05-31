@@ -66,3 +66,6 @@ target/
 
 #ignoring scraped data
 data/
+
+#project settings
+../.idea/
